@@ -140,7 +140,7 @@ export default defineAppConfig({
     site_name_fa: "بگ چه",
     title_fa: "بگ چه",
     description_fa: "کوچولو و بازیگوش",
-    site_name_en: "Mamoochi",
+    site_name_en: "Bagche",
     title_en: "Bagche",
     description_en: "Tiny & Playful",
     footer_fa: "همه چیز به شکل شگفت انگیزی خوب باید باشد",
