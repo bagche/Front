@@ -1,0 +1,12 @@
+node_modules
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+dist
+dist_build
+pnpm-lock.yaml
+.wrangler
+migrations
+.data
