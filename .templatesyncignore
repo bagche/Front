@@ -4,3 +4,4 @@ README.md
 app/assets/css/extra.css
 reloadB.sh
 wrangler.toml
+app/app.config.ts
