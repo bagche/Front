@@ -4,7 +4,7 @@ compatibility_flags = [ "nodejs_compat" ]
 compatibility_date = "2024-09-23"
 
 [[d1_databases]]
-binding = "DB"                                       # available in your Worker on env.DB
+binding = "DB"                                      
 database_name = "bagche"
 database_id = "ebcaf82e-f9e5-4765-9051-2b9bd37c1fd6"
 migrations_dir = "migrations"
