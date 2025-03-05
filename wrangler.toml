@@ -1,16 +1,12 @@
-name = "mamoochi"
+name = "bagche"
 pages_build_output_dir = "dist"
 compatibility_flags = [ "nodejs_compat" ]
 compatibility_date = "2024-09-23"
 
 [[d1_databases]]
 binding = "DB"                                       # available in your Worker on env.DB
-database_name = "inbox"
-database_id = "9a4c5463-2684-4973-8a04-6c3f5886924c"
+database_name = "bagche"
+database_id = "ebcaf82e-f9e5-4765-9051-2b9bd37c1fd6"
 migrations_dir = "migrations"
-
-[[kv_namespaces]]
-binding = "inboxKV"
-id = "641b2dd1ff024c6d88da451bee969e54"
 
  
