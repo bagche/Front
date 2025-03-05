@@ -5,8 +5,6 @@ compatibility_date = "2024-09-23"
 
 [[d1_databases]]
 binding = "DB"                                      
-database_name = "bagche"
-database_id = "ebcaf82e-f9e5-4765-9051-2b9bd37c1fd6"
+database_name = "bagche-front"
+database_id = "37d40e1d-f217-4cdf-bb0b-2a9d068fbe3f"
 migrations_dir = "migrations"
-
- 
