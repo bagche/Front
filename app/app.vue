@@ -2,7 +2,7 @@
 import * as locales from "@nuxt/ui/locale";
 
 const { locale } = useI18n();
-const { registerNew } = useUser();
+const { initDevice } = useUser();
 const appConfig = useAppConfig();
 
 // Determine the proper locale object from @nuxt/ui/locale.
@@ -55,12 +55,12 @@ watchEffect(() => {
 });
 
 // Initialize user session/registration.
-registerNew();
+initDevice();
 </script>
 
 <template>
   <UApp :locale="appLocales">
-    <NuxtLayout class="dark:bg-slate-700">
+    <NuxtLayout>
       <NuxtLoadingIndicator />
       <Installer v-if="!appConfig.installed" />
       <NuxtPage v-else />

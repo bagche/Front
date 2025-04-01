@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col justify-start">
+  <div>
     <Header />
-    <div class="min-h-screen pb-10">
+    <div>
       <slot />
     </div>
     <Footer />
