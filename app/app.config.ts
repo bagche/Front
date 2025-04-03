@@ -12,9 +12,9 @@ export default defineAppConfig({
       to: "/",
     },
     {
-      label: "Explorer",
+      label: "logs",
       // icon: "i-lucide-search",
-      to: "/explorer",
+      to: "/logs",
     },
     {
       label: "About",
@@ -38,19 +38,19 @@ export default defineAppConfig({
       label: "Items",
       // icon: "i-lucide-book-open",
       // active: true,
-      defaultOpen: true,
+      // defaultOpen: true,
       to: "/manage/items",
     },
-    // {
-    //   label: "Comments",
-    //   // icon: "i-lucide-database",
-    //   to: "/manage/comments",
-    // },
+    {
+      label: "Comments",
+      // icon: "i-lucide-database",
+      to: "/manage/comments",
+    },
     {
       label: "Users",
       // icon: "i-lucide-box",
       to: "/manage/users",
-      defaultOpen: true,
+      // defaultOpen: true,
     },
     {
       label: "Builds",
@@ -64,35 +64,6 @@ export default defineAppConfig({
       // icon: "i-lucide-book-open",
       to: "/manage/settings",
     },
-  ],
-  corePermissions: [
-    "dashboard.read",
-    "dashboard.edit",
-
-    "users.all",
-    "users.edit",
-    "users.delete",
-
-    "roles.read",
-    "roles.edit",
-    "roles.delete",
-
-    "item.create",
-    "item.read",
-    "item.edit",
-    "item.delete",
-
-    "page.create",
-    "page.read",
-    "page.edit",
-    "page.delete",
-
-    "media.upload",
-    "media.read",
-    "media.delete",
-
-    "cdn.update",
-    "config.manage",
   ],
   app: {
     site_name_fa: "بَگ چه",
