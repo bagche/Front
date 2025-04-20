@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import viteCompression from "vite-plugin-compression";
 
 import { generateRoutes } from "./scripts/prerender";
@@ -9,7 +10,6 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
     "@nuxtjs/seo",
-    "@nuxt/content",
     "@nuxt/image",
     "@nuxt/eslint",
     "nitro-cloudflare-dev",
@@ -18,8 +18,23 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "nuxt-authorization",
     "nuxt-echarts",
+    "@nuxtjs/turnstile",
+    "@nuxtjs/mdc",
+    // "nuxt-delay-hydration",
   ],
-
+  app: {
+    head: {
+      link: [
+        {
+          rel: "preload",
+          href: "/fonts/Vazirmatn[wght].woff2",
+          as: "font",
+          type: "font/woff2",
+          crossorigin: "anonymous",
+        },
+      ],
+    },
+  },
   css: ["~/assets/css/main.css", "~/assets/css/extra.css"],
   build: { transpile: ["echarts-liquidfill"] },
 
@@ -29,36 +44,63 @@ export default defineNuxtConfig({
     },
     css: {
       preprocessorOptions: {
-        scss: {
-          api: "modern",
+        scss: { api: "modern" },
+      },
+    },
+    plugins: [
+      viteCompression({
+        algorithm: "brotliCompress",
+        threshold: 1024,
+      }),
+    ],
+    build: {
+      minify: "esbuild",
+      cssMinify: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ["vue", "echarts", "vue-router"],
+            charts: ["echarts-liquidfill"],
+          },
         },
       },
     },
-    plugins: [viteCompression({ algorithm: "brotliCompress" })],
-    build: {
-      minify: true,
+    optimizeDeps: {
+      include: ["echarts", "echarts-liquidfill"],
+      exclude: ["shiki", "oniguruma"],
     },
   },
-
   nitro: {
     preset: "cloudflare-pages",
-    compressPublicAssets: true,
+    compressPublicAssets: { brotli: true },
     minify: true,
     prerender: {
       crawlLinks: false,
       routes: generateRoutes(),
+      failOnError: true,
+      // concurrency: 10,
+      // autoSubfolderIndex: true,
     },
   },
-  ui: {
-    fonts: false,
+  ui: { fonts: false },
+
+  image: {
+    cloudflare: {
+      baseURL: "https://mamoochi.bagche.app",
+    },
+    formats: ["webp", "avif"],
+    density: [1, 2],
+    quality: 80,
   },
+
   i18n: {
     bundle: {
       optimizeTranslationDirective: false,
     },
+    lazy: true,
     detectBrowserLanguage: {
       useCookie: true,
-      cookieKey: "i18n_redirected",
+      cookieKey: "i18n",
       redirectOn: "root",
     },
     locales: [
@@ -66,56 +108,44 @@ export default defineNuxtConfig({
         name: "فارسی",
         dir: "rtl",
         code: "fa",
-        file: "fa.json",
+        file: "fa.js",
       },
       {
         name: "English",
         dir: "ltr",
         code: "en",
-        file: "en.json",
+        file: "en.js",
       },
     ],
     langDir: "locales",
     defaultLocale: "fa",
-    strategy: "prefix_and_default",
+    strategy: "prefix",
     experimental: {
       localeDetector: "localeDetector.ts",
+      generatedLocaleFilePathFormat: "off",
     },
   },
+
   routeRules: {
     "/": { prerender: true },
     "/fa/": { prerender: true },
-    // Disable prerender (and SSR) for any manage routes:
+    "/en/": { prerender: true },
+    "/:locale/**": { prerender: true },
+    "/api/**": { ssr: true },
     "/manage": { prerender: false, ssr: false, robots: false },
     "/manage/**": { prerender: false, ssr: false, robots: false },
     "/:locale/manage": { prerender: false, ssr: false, robots: false },
     "/:locale/manage/**": { prerender: false, ssr: false, robots: false },
-
-    // ISR rules for logs (all locales)
-    "/:locale/logs": { isr: 3600 },
-    "/:locale/logs/**": { isr: true },
-
-    // ISR rules for cats (all locales)
-    "/:locale/cats/**": { isr: true },
-
-    // Profile routes: disable robots indexing (all locales)
-    "/:locale/profile/**": { robots: false },
-
-    // Default: prerender everything else
-    "/**": { prerender: true },
   },
+
   experimental: {
     restoreState: true,
+    payloadExtraction: false,
   },
-  content: {
-    database: {
-      type: "d1",
-      bindingName: "DB",
-    },
-  },
+
   echarts: {
     ssr: true,
-    renderer: ["canvas", "svg"],
+    renderer: ["svg"],
     charts: ["BarChart", "LineChart"],
     components: [
       "DatasetComponent",
@@ -126,9 +156,30 @@ export default defineNuxtConfig({
       "VisualMapComponent",
     ],
   },
+
   runtimeConfig: {
     githubToken: "",
     githubOwner: "",
     githubRepo: "",
+    turnstile: {
+      secretKey: "",
+    },
   },
+
+  seo: {
+    automaticDefaults: true,
+  },
+
+  linkChecker: { enabled: false },
+  turnstile: {
+    siteKey: "0x4AAAAAABMfNmOrYsdJl6yK",
+    addValidateEndpoint: true,
+  },
+  alias: {
+    "#velite": resolve(__dirname, "./.velite"), // Absolute path to .velite/index.js
+  },
+  mdc: {
+    highlight: false,
+  },
+  // delayHydration: { mode: "mount" },
 });
