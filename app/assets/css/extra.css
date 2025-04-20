@@ -6,20 +6,18 @@
   font-family: "Vazirmatn";
   font-style: normal;
   font-weight: 100 900;
-  src: url("~/assets/fonts/Vazirmatn[wght].ttf");
+  src: url("/fonts/Vazirmatn[wght].woff2") format("woff2");
+  font-display: swap;
 }
-
 :root {
   font-family: Vazirmatn;
 }
-[dir="rtl"] .description {
-  @apply text-xl;
-}
+
 [dir="rtl"] .logo {
   @apply text-3xl;
+  font-family: Vazirmatn;
 }
 [dir="rtl"] .navbar span {
-  @apply text-sm;
 }
 
 .dark .page-header {

@@ -1,7 +1,7 @@
 ---
 title: درباره
 description: "درباره من"
-thumbnail: /content/totoro-image-6.webp
+thumbnail: /content/gnu.webp
 ---
 
 ## درباره من

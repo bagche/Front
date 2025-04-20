@@ -1,7 +1,7 @@
 ---
 title: پروژه
 description: پروژه ها
-thumbnail: /content/totoro-image-12.webp
+thumbnail: /content/gnu.webp
 ---
 
 <LogsArchives cat='projects' />

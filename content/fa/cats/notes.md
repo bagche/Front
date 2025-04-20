@@ -1,7 +1,7 @@
 ---
 title: یادداشت
 description: یادداشت ها
-thumbnail: /content/totoro-image-12.webp
+thumbnail: /content/gnu.webp
 ---
 
 <LogsArchives cat='notes' />
