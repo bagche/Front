@@ -18,7 +18,9 @@ const emit = defineEmits<{
   <div class="flex w-full flex-col mt-5">
     <UCard
       v-for="comment in comments"
+      :id="`#comment-${comment.id}`"
       :key="comment.id"
+      :href="`#comment-${comment.id}`"
       class="mb-10 w-full"
       variant="soft"
       :ui="{
@@ -60,7 +62,7 @@ const emit = defineEmits<{
         <div class="flex justify-between items-center text-sm">
           <span>{{ formatTimeAgo(comment.createdAt) }}</span>
           <UButton
-            variant="outline"
+            variant="subtle"
             color="gray"
             size="sm"
             :ui="{ rounded: 'rounded-md' }"

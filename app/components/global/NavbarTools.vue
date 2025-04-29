@@ -1,38 +1,23 @@
 <script setup lang="ts">
-const { loggedIn, clear, user } = useUserSession();
+const { loggedIn, clear } = useUserSession();
 const { profile, logout } = useUser();
-const { t, locale, setLocale } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
-
-const updateProfileIsOpen = ref(false);
-const changePasswordIsOpen = ref(false);
-const loginIsOpen = ref(false);
-const registerIsOpen = ref(false);
 
 // Account group always shows the avatar
 const accountGroup = [
   {
     label: "",
     slot: "account",
-    disabled: true,
   },
 ];
 
 // Items for logged in users
 const loggedInItems = [
   {
-    label: t("Update Profile"),
-    icon: "i-lucide-user-pen",
-    onSelect: () => {
-      updateProfileIsOpen.value = true;
-    },
-  },
-  {
-    label: t("Change Password"),
-    icon: "i-lucide-key",
-    onSelect: () => {
-      changePasswordIsOpen.value = true;
-    },
+    label: t("Profile"),
+    icon: "i-lucide-user",
+    to: `/${locale.value}/profile`,
   },
 ];
 
@@ -41,16 +26,12 @@ const loggedOutItems = [
   {
     label: t("Login"),
     icon: "i-lucide-arrow-right-left",
-    onSelect: () => {
-      loginIsOpen.value = true;
-    },
+    to: `/${locale.value}/login`,
   },
   {
     label: t("Register"),
     icon: "i-lucide-log-in",
-    onSelect: () => {
-      registerIsOpen.value = true;
-    },
+    to: `/${locale.value}/register`,
   },
 ];
 
@@ -61,8 +42,7 @@ const exitItem = {
   onSelect: async () => {
     await clear();
     logout();
-    reloadNuxtApp();
-    window.location.reload();
+    window.location.replace("/");
   },
 };
 
@@ -78,9 +58,16 @@ const items = computed(() => {
     <UButtonGroup class="gap-3" color="success">
       <Can :ability="createCommit">
         <UButton
+          v-if="!route.path.includes('manage')"
           :to="'/' + locale + '/manage/editor' + route.path"
           size="xs"
           icon="i-lucide-square-pen"
+          variant="ghost"
+        />
+        <UButton
+          :to="'/' + locale + '/manage/editor' + route.path"
+          size="xs"
+          icon="i-lucide-pen-line"
           variant="ghost"
         />
       </Can>
@@ -135,47 +122,5 @@ const items = computed(() => {
         </template>
       </UDropdownMenu>
     </UButtonGroup>
-    <UModal
-      v-model:open="registerIsOpen"
-      :dismissible="false"
-      :title="$t('Register User')"
-    >
-      <template #body>
-        <AuthRegisterForm @close-modal="registerIsOpen = false" />
-      </template>
-    </UModal>
-    <UModal
-      v-model:open="loginIsOpen"
-      :dismissible="false"
-      :title="$t('Login User')"
-    >
-      <template #body>
-        <AuthLoginForm @close-modal="loginIsOpen = false" />
-      </template>
-    </UModal>
-    <UModal
-      :open="changePasswordIsOpen"
-      :dismissible="false"
-      :title="$t('Change Password')"
-    >
-      <template #body>
-        <AuthChangePasswordForm @close-modal="changePasswordIsOpen = false" />
-      </template>
-    </UModal>
-    <UModal
-      v-model:open="updateProfileIsOpen"
-      :dismissible="false"
-      :title="$t('Update Profile')"
-    >
-      <template #body>
-        <AuthUpdateProfileForm @close-modal="updateProfileIsOpen = false" />
-      </template>
-    </UModal>
   </div>
 </template>
-
-<style lang="scss">
-.avatar-button img {
-  width: auto !important;
-}
-</style>

@@ -7,34 +7,26 @@ export default defineNuxtConfig({
   future: { compatibilityVersion: 4 },
   compatibilityDate: "2024-11-01",
   devtools: { enabled: false },
+  spaLoadingTemplate: true,
+
   modules: [
+    "nuxt-delay-hydration",
+    "nuxt-booster",
     "@nuxt/ui",
-    "@nuxtjs/seo",
     "@nuxt/image",
-    "@nuxt/eslint",
-    "nitro-cloudflare-dev",
     "nuxt-auth-utils",
+    "nitro-cloudflare-dev",
     "nuxt-tiptap-editor",
     "@nuxtjs/i18n",
     "nuxt-authorization",
     "nuxt-echarts",
     "@nuxtjs/turnstile",
     "@nuxtjs/mdc",
-    // "nuxt-delay-hydration",
+    "@nuxtjs/sitemap",
+    "@nuxtjs/robots",
+    "@nuxt/eslint",
   ],
-  app: {
-    head: {
-      link: [
-        {
-          rel: "preload",
-          href: "/fonts/Vazirmatn[wght].woff2",
-          as: "font",
-          type: "font/woff2",
-          crossorigin: "anonymous",
-        },
-      ],
-    },
-  },
+
   css: ["~/assets/css/main.css", "~/assets/css/extra.css"],
   build: { transpile: ["echarts-liquidfill"] },
 
@@ -54,22 +46,24 @@ export default defineNuxtConfig({
       }),
     ],
     build: {
+      target: "esnext",
       minify: "esbuild",
       cssMinify: true,
       rollupOptions: {
         output: {
           manualChunks: {
-            vendor: ["vue", "echarts", "vue-router"],
-            charts: ["echarts-liquidfill"],
+            vendor: ["vue", "vue-router"],
+            echarts: ["echarts"],
+            liquidfill: ["echarts-liquidfill"],
           },
         },
       },
     },
     optimizeDeps: {
       include: ["echarts", "echarts-liquidfill"],
-      exclude: ["shiki", "oniguruma"],
     },
   },
+
   nitro: {
     preset: "cloudflare-pages",
     compressPublicAssets: { brotli: true },
@@ -78,19 +72,28 @@ export default defineNuxtConfig({
       crawlLinks: false,
       routes: generateRoutes(),
       failOnError: true,
-      // concurrency: 10,
-      // autoSubfolderIndex: true,
+      autoSubfolderIndex: false,
     },
   },
   ui: { fonts: false },
-
   image: {
+    screens: {
+      default: 320,
+      xxs: 480,
+      xs: 576,
+      sm: 768,
+      md: 996,
+      lg: 1200,
+      xl: 1367,
+      xxl: 1600,
+      "4k": 1921,
+    },
     cloudflare: {
-      baseURL: "https://mamoochi.bagche.app",
+      baseURL: process.env.NUXT_BASE_URL,
     },
     formats: ["webp", "avif"],
     density: [1, 2],
-    quality: 80,
+    quality: 70,
   },
 
   i18n: {
@@ -127,15 +130,11 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    "/": { prerender: true },
-    "/fa/": { prerender: true },
-    "/en/": { prerender: true },
-    "/:locale/**": { prerender: true },
-    "/api/**": { ssr: true },
-    "/manage": { prerender: false, ssr: false, robots: false },
-    "/manage/**": { prerender: false, ssr: false, robots: false },
-    "/:locale/manage": { prerender: false, ssr: false, robots: false },
-    "/:locale/manage/**": { prerender: false, ssr: false, robots: false },
+    "/api/**": {
+      ssr: true,
+    },
+    "/:locale/manage": { prerender: false, ssr: false },
+    "/:locale/manage/**": { prerender: false, ssr: false },
   },
 
   experimental: {
@@ -144,7 +143,7 @@ export default defineNuxtConfig({
   },
 
   echarts: {
-    ssr: true,
+    ssr: false,
     renderer: ["svg"],
     charts: ["BarChart", "LineChart"],
     components: [
@@ -152,34 +151,64 @@ export default defineNuxtConfig({
       "GridComponent",
       "TooltipComponent",
       "ToolboxComponent",
-      "GeoComponent",
       "VisualMapComponent",
+      "LegendComponent",
     ],
   },
 
   runtimeConfig: {
-    githubToken: "",
-    githubOwner: "",
-    githubRepo: "",
+    githubToken: process.env.NUXT_APP_GITHUB_TOKEN || "",
+    githubOwner: process.env.NUXT_APP_GITHUB_OWNER || "",
+    githubRepo: process.env.NUXT_APP_GITHUB_REPO || "",
+    flareToken: process.env.NUXT_APP_FLARE_TOKEN || "",
+    flareZoneId: process.env.NUXT_APP_FLARE_ZONE_ID || "",
+    app: {},
     turnstile: {
-      secretKey: "",
+      secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY || "",
     },
   },
 
-  seo: {
-    automaticDefaults: true,
-  },
-
-  linkChecker: { enabled: false },
   turnstile: {
-    siteKey: "0x4AAAAAABMfNmOrYsdJl6yK",
+    siteKey: process.env.NUXT_TURNSTILE_SITE_KEY || "",
     addValidateEndpoint: true,
   },
   alias: {
-    "#velite": resolve(__dirname, "./.velite"), // Absolute path to .velite/index.js
+    "#velite": resolve(__dirname, "./.velite"),
   },
   mdc: {
     highlight: false,
   },
-  // delayHydration: { mode: "mount" },
+  booster: {
+    detection: {
+      performance: true,
+      browserSupport: true,
+    },
+    performanceMetrics: {
+      device: {
+        hardwareConcurrency: { min: 2, max: 48 },
+        deviceMemory: { min: 2 },
+      },
+      timing: {
+        fcp: 800,
+        dcl: 1200,
+      },
+    },
+    optimizeSSR: {
+      cleanPreloads: true,
+      cleanPrefetches: true,
+      inlineStyles: true,
+    },
+    disableNuxtFontaine: true,
+    disableNuxtImage: true,
+    experimental: {
+      fallbackInit: true,
+    },
+  },
+  delayHydration: {
+    mode: "mount", // or 'manual' or 'mount'
+    debug: process.env.NODE_ENV === "development",
+  },
+  robots: {
+    disallow: ["/manage", "/profile"],
+  },
 });

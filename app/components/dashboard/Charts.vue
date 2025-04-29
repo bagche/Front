@@ -1,46 +1,15 @@
 <script setup lang="ts">
 import { DateTime } from "luxon";
-
 const { t } = useI18n();
 
-// --- Data Generation Functions ---
-
-const generateVisitorData = () => {
-  const today = DateTime.now();
-  return Array.from({ length: 30 }, (_, i) => {
-    const date = today.minus({ days: i }).toISODate();
-    return {
-      Date: formatDateTime(date!),
-      Visitors: Math.round(50 + Math.random() * 200),
-    };
-  }).reverse();
-};
-
-const generateCostData = () => {
-  const today = DateTime.now();
-  return Array.from({ length: 30 }, (_, i) => {
-    const date = today.minus({ days: i }).toISODate();
-    return {
-      Date: formatDateTime(date!),
-      Cost: Math.round(10 + Math.random() * 90) / 10,
-    };
-  }).reverse();
-};
-
-const mergeData = () => {
-  const visitors = generateVisitorData();
-  const cost = generateCostData();
-  return visitors.map((visitor, index) => ({
-    Date: visitor.Date,
-    Visitors: visitor.Visitors,
-    Cost: cost[index].Cost,
-  }));
-};
-
-// --- Chart Configuration ---
+const today = DateTime.now();
+const startDate = today.minus({ days: 30 }).toISODate();
+const endDate = today.toISODate();
+const { data } = await useFetch("/api/analysis/traffic", {
+  query: { startDate, endDate },
+});
 
 const option = computed(() => {
-  const mergedData = mergeData();
   return {
     animation: false,
     tooltip: {
@@ -48,30 +17,34 @@ const option = computed(() => {
       className: "echarts-tooltip",
     },
     legend: {
-      data: ["Visitors", "Cost"],
+      data: [t("Page Views"), t("Unique Visits")],
     },
     dataset: {
-      dimensions: ["Date", "Visitors", "Cost"],
-      source: mergedData,
+      dimensions: ["date", "pageViews", "uniqueVisits"],
+      source:
+        data?.value?.map((item) => ({
+          date: formatDateTime(item.date!),
+          pageViews: item.pageViews,
+          uniqueVisits: item.uniqueVisits,
+        })) ?? [],
     },
     xAxis: {
       type: "category",
     },
     yAxis: [
-      { type: "value", name: t("Visitors") },
-      { type: "value", name: t("$ Cost"), position: "right" },
+      { type: "value", name: t("Page Views") },
+      { type: "value", name: t("Unique Visits"), position: "right" },
     ],
     series: [
       {
         type: "bar",
-        name: "Visitors",
-        encode: { x: "Date", y: "Visitors" },
+        name: t("Page Views"),
+        encode: { x: "date", y: "pageViews" },
       },
       {
         type: "bar",
-        name: "Cost",
-        yAxisIndex: 1,
-        encode: { x: "Date", y: "Cost" },
+        name: t("Unique Visits"),
+        encode: { x: "date", y: "uniqueVisits" },
       },
     ],
   };
