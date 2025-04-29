@@ -1,6 +1,9 @@
 .github
 .env
+public
+content
 app/app.config.ts
 README.md
+app/assets/css/extra.css
 reloadB.sh
 wrangler.toml

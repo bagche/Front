@@ -1,10 +1,10 @@
-name = "bagche"
+name = "mamoochi"
 pages_build_output_dir = "dist"
-compatibility_flags = [ "nodejs_compat" ]
+compatibility_flags = ["nodejs_compat"]
 compatibility_date = "2024-09-23"
 
 [[d1_databases]]
-binding = "DB"                                      
-database_name = "bagche-front"
-database_id = "37d40e1d-f217-4cdf-bb0b-2a9d068fbe3f"
+binding = "DB"
+database_name = "mamoochi"
+database_id = "1702648e-6998-4b67-bce2-281bb4622534"
 migrations_dir = "migrations"
