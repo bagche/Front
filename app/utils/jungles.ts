@@ -1,29 +1,35 @@
-// import { sha256 } from "@noble/hashes/sha256";
-
-// import JunglesJson from "~/assets/jungles.json";
+let cachedJungles: typeof any | null = null;
 
 function capitalize(s: any) {
   if (typeof s !== "string") return "";
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+const loadJungles = async () => {
+  if (cachedJungles) return cachedJungles;
+  const response = await fetch("/data/jungles.json");
+  cachedJungles = await response.json();
+  return cachedJungles;
+};
+
 /**
- * deterministically create adjective + animal names
+ * create random adjective + animal names based on locale
  */
-// export const GenerateIdentity = (seed: any, lang = "fa") => {
-//   if (!seed) {
-//     throw new Error("No seed provided");
-//   }
-//   const hash = sha256(seed); // Uint8Array
-//   const adjective =
-//     lang == "fa"
-//       ? JunglesJson.adjectivesFa[hash[0] % JunglesJson.adjectivesFa.length]
-//       : JunglesJson.adjectivesEn[hash[0] % JunglesJson.adjectivesEn.length];
-//   const animal =
-//     lang == "fa"
-//       ? JunglesJson.animalsFa[hash[1] % JunglesJson.animalsFa.length]
-//       : JunglesJson.animalsEn[hash[1] % JunglesJson.animalsEn.length];
-//   return lang == "fa"
-//     ? `${capitalize(animal)} ${capitalize(adjective)}`
-//     : `${capitalize(adjective)} ${capitalize(animal)}`;
-// };
+export const GenerateIdentity = async (
+  locale: string = "en"
+): Promise<string> => {
+  const jungles = await loadJungles();
+
+  const adjectives =
+    locale === "fa" ? jungles.adjectivesFa : jungles.adjectivesEn;
+  const animals = locale === "fa" ? jungles.animalsFa : jungles.animalsEn;
+
+  const randomIndex = (array: any[]) =>
+    Math.floor(Math.random() * array.length);
+  const adjective = adjectives[randomIndex(adjectives)];
+  const animal = animals[randomIndex(animals)];
+
+  return locale === "fa"
+    ? `${capitalize(animal)} ${capitalize(adjective)}`
+    : `${capitalize(adjective)} ${capitalize(animal)}`;
+};

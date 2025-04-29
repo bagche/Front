@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const { locale, defaultLocale, t } = useI18n();
 const route = useRoute();
+const appConfig = useAppConfig();
 
 // Fetch content with useAsyncData
 const { data: pageData, error }: any = await useAsyncData(
@@ -35,11 +36,31 @@ const { data: pageData, error }: any = await useAsyncData(
 
 // Set SEO metadata only if pageData exists
 useSeoMeta({
+  // Basic Meta Tags
   title: pageData.value?.title ?? t("Page Not Found"),
   description: pageData.value?.description ?? t("Page Not Found"),
+  charset: "utf-8",
+  viewport: "width=device-width, initial-scale=1",
+
+  // Open Graph Tags
   ogTitle: pageData.value?.title ?? t("Page Not Found"),
   ogDescription: pageData.value?.description ?? t("Page Not Found"),
-  ogImage: pageData.value?.thumbnail ?? "/icons/android-chrome-512x512.png",
+  ogImage: pageData.value?.thumbnail ?? appConfig.app.default_banner,
+  ogImageAlt: pageData.value?.title ?? t("Page Not Found"),
+  // ogUrl: canonicalUrl,
+  ogType: "website",
+  ogLocale: locale.value,
+  // ogSiteName: config.public.siteName || 'Your Site Name',
+
+  // Twitter Card Tags
+  twitterCard: pageData.value?.thumbnail ?? appConfig.app.default_banner,
+  twitterTitle: pageData.value?.title ?? t("Page Not Found"),
+  twitterDescription: pageData.value?.description ?? t("Page Not Found"),
+  twitterImage: pageData.value?.thumbnail ?? appConfig.app.default_banner,
+
+  // Additional SEO Tags
+  robots: pageData.value?.noIndex ? "noindex" : "index, follow",
+  keywords: pageData.value?.keywords?.join(", ") ?? "",
 });
 </script>
 
@@ -93,7 +114,6 @@ useSeoMeta({
             preload
             loading="lazy"
             placeholder
-            sizes="sm:100vw md:80vw lg:800px"
             class="w-full max-w-7xl max-h-[50vh] h-auto object-contain md:rounded-lg"
             :src="pageData.thumbnail"
             :alt="pageData.title"
@@ -103,7 +123,7 @@ useSeoMeta({
 
       <UContainer>
         <div
-          class="maxStorage-w-3xl mx-auto flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 prose prose-sm sm:prose-base md:prose-lg dark:prose-invert"
+          class="mx-auto flex flex-col items-center prose prose-sm sm:prose-base md:prose-lg dark:prose-invert"
         >
           <PageToc
             v-if="pageData.toc"
@@ -111,6 +131,7 @@ useSeoMeta({
             :comments="pageData.comments"
           />
           <MDC :value="pageData?.body" tag="div" class="w-full" />
+          <NewsletterSubscribe v-if="pageData.newsletter" />
           <Comments v-if="pageData.comments" />
         </div>
       </UContainer>
