@@ -65,7 +65,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="w-full min-h-screen">
+  <div class="w-full min-h-[90vh]">
     <div v-if="pageData && !error" class="w-full">
       <template v-if="pageData.thumbnail">
         <div
@@ -121,7 +121,13 @@ useSeoMeta({
         </div>
       </template>
 
-      <UContainer>
+      <main
+        :class="[
+          pageData.fullWidth
+            ? 'w-full m-0 p-0'
+            : 'w-full max-w-(--ui-container) mx-auto px-4 sm:px-6 lg:px-8  ',
+        ]"
+      >
         <div
           class="mx-auto flex flex-col items-center prose prose-sm sm:prose-base md:prose-lg dark:prose-invert"
         >
@@ -134,7 +140,7 @@ useSeoMeta({
           <NewsletterSubscribe v-if="pageData.newsletter" />
           <Comments v-if="pageData.comments" />
         </div>
-      </UContainer>
+      </main>
     </div>
 
     <NotFound v-else class="w-full" />

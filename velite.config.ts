@@ -19,6 +19,7 @@ const content = defineCollection({
       path: s.path(),
       body: s.raw(),
       tocData: s.toc(),
+      fullWidth: s.boolean().optional(),
     })
     .transform((data) => ({
       ...data,
@@ -45,6 +46,7 @@ const logs = defineCollection({
       path: s.path(),
       body: s.raw(),
       tocData: s.toc(),
+      fullWidth: s.boolean().optional(),
     })
     .transform((data) => ({
       ...data,

@@ -1,10 +1,21 @@
 export default defineAppConfig({
   installed: true,
-  // ui: {
-  //   colors: {
-  //     primary: "black",
-  //   },
-  // },
+  ui: {
+    input: {
+      variants: {
+        size: {
+          xxl: {
+            base: "px-5 py-4 text-xl gap-2",
+            leading: "ps-10",
+            trailing: "pe-5",
+            leadingIcon: "size-6",
+            leadingAvatarSize: "xs",
+            trailingIcon: "size-6",
+          },
+        },
+      },
+    },
+  },
   mainMenu: [
     {
       label: "Home",
@@ -47,7 +58,7 @@ export default defineAppConfig({
   ],
   app: {
     site_name_fa: "بَگ چه",
-    title_fa: "بَگـ چه",
+    title_fa: "بَگـ چِـــ",
     description_fa: "کوچولو و بازیگوش",
     site_name_en: "BagChe",
     title_en: "Bag Che",

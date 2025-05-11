@@ -1,14 +1,7 @@
 ---
 title: صفحه نخست
-description: مموچی
+description: بگ‌چه
+fullWidth: true
 ---
 
-<div>
-
-<HomeIntro />
-
-</div>
-
-<hr >
-
-<LogsArchives />
+<SearchIntro />
